@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraceIt • Viral Message Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .card {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            padding: 2rem 2rem 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            border-left: 4px solid #f97316;
+            padding-left: 1rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 1.2rem;
+            resize: vertical;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.2s;
+            background: #f8fafc;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+            background: white;
+        }
+
+        button {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 3rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background: #f97316;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(249, 115, 22, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result {
+            margin-top: 2rem;
+            background: #f1f5f9;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .stat-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: white;
+            padding: 0.2rem 1rem;
+            border-radius: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .score-high {
+            color: #b91c1c;
+        }
+
+        .score-medium {
+            color: #c2410c;
+        }
+
+        .score-low {
+            color: #047857;
+        }
+
+        .google-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border-radius: 3rem;
+            color: #0f172a;
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid #cbd5e1;
+            transition: 0.2s;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .google-btn:hover {
+            background: #f8fafc;
+            border-color: #f97316;
+        }
+
+        .footnote {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .footer {
+            background: #f1f5f9;
+            padding: 1rem 2rem;
+            text-align: center;
+            color: #475569;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="header">
+            <h1>🔍 TraceIt</h1>
+            <p>See how many times a message has been forwarded – before you share.</p>
+        </div>
+        <div class="content">
+            <textarea id="messageInput" rows="4" placeholder="Paste any forwarded message here..."></textarea>
+            <button id="checkBtn">
+                <span>🔍</span> Check Forward Count
+            </button>
+
+            <div id="resultBox" class="result" style="display: none;">
+                <div class="stat-row">
+                    <span class="stat-label">📋 Fingerprint</span>
+                    <span class="stat-value" id="hashValue">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🔄 Times forwarded</span>
+                    <span class="stat-value" id="countValue">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🌶️ Sensationalism</span>
+                    <span class="stat-value" id="scoreValue">-</span>
+                </div>
+                <a href="#" id="googleLink" target="_blank" class="google-btn">
+                    <span>🔎</span> Google this claim
+                </a>
+                <div class="footnote">
+                    This message has been seen <span id="countContext"></span> times by our system.
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            No fact-checking — just crowd awareness. Be the one who pauses.
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/check';
+
+        document.getElementById('checkBtn').addEventListener('click', async () => {
+            const text = document.getElementById('messageInput').value.trim();
+            if (!text) {
+                alert('Please paste a message.');
+                return;
+            }
+
+            const btn = document.getElementById('checkBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span> Checking...';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('hashValue').textContent = data.hash;
+                    document.getElementById('countValue').textContent = data.forward_count;
+
+                    const scoreEl = document.getElementById('scoreValue');
+                    scoreEl.textContent = data.sensationalism_score;
+                    scoreEl.className = 'stat-value';
+                    if (data.sensationalism_score === 'High') {
+                        scoreEl.classList.add('score-high');
+                    } else if (data.sensationalism_score === 'Medium') {
+                        scoreEl.classList.add('score-medium');
+                    } else {
+                        scoreEl.classList.add('score-low');
+                    }
+
+                    const searchQuery = encodeURIComponent(data.search_query);
+                    document.getElementById('googleLink').href = `https://www.google.com/search?q=${searchQuery}`;
+
+                    document.getElementById('countContext').textContent = data.forward_count;
+                    document.getElementById('resultBox').style.display = 'block';
+                } else {
+                    alert('Error: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Failed to connect to server. Make sure the backend is running at ' + API_URL);
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>🔍</span> Check Forward Count';
+            }
+        });
+    </script>
+</body>
+
+</html>
