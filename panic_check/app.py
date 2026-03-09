@@ -1,7 +1,7 @@
 import hashlib
 import sqlite3
-from flask import Flask, request, jsonify, render_template
-from flask_cors import CORS
+from flask import Flask, request, jsonify, render_template  # type: ignore
+from flask_cors import CORS  # type: ignore
 
 app = Flask(__name__)
 CORS(app)
@@ -77,7 +77,7 @@ def check_message():
     conn.close()
 
     score = sensationalism_score(text)
-    short_hash = text_hash[:8]
+    short_hash = text_hash[:8]  # type: ignore
     search_query = extract_search_query(text)
 
     return jsonify({
